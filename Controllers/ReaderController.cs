@@ -1,36 +1,74 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Assignment2.Models;
+using Assignment2.Repositories;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ReaderController : ControllerBase
+namespace Assignment2.Controllers
 {
-    [HttpGet]
-    public IActionResult GetAllReaders()
+    public class ReaderController : Controller
     {
-        return Ok("List of all readers.");
-    }
+        private readonly ReaderRepository _repo = new ReaderRepository();
 
-    [HttpGet("{id}")]
-    public IActionResult GetReaderById(int id)
-    {
-        return Ok($"Details of reader with ID {id}.");
-    }
+        // Index action to show all readers
+        public IActionResult Index()
+        {
+            var readers = _repo.GetAll();
+            return View(readers);
+        }
 
-    [HttpPost]
-    public IActionResult AddReader()
-    {
-        return Ok("Reader added successfully.");
-    }
+        // Details action to show a specific reader
+        public IActionResult Details(int id)
+        {
+            var reader = _repo.GetById(id);
+            if (reader == null) return NotFound();
+            return View(reader);
+        }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateReader(int id)
-    {
-        return Ok($"Reader with ID {id} updated.");
-    }
+        // Create action to show the form for creating a new reader
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-    [HttpDelete("{id}")]
-    public IActionResult DeleteReader(int id)
-    {
-        return Ok($"Reader with ID {id} deleted.");
+        // Create action to save the new reader to the database
+        [HttpPost]
+        public IActionResult Create(Reader reader)
+        {
+            if (!ModelState.IsValid) return View(reader);
+            _repo.Add(reader);
+            return RedirectToAction("Index");
+        }
+
+        // Edit action to show the form for editing a reader
+        public IActionResult Edit(int id)
+        {
+            var reader = _repo.GetById(id);
+            if (reader == null) return NotFound();
+            return View(reader);
+        }
+
+        // Edit action to update the reader's data
+        [HttpPost]
+        public IActionResult Edit(Reader reader)
+        {
+            if (!ModelState.IsValid) return View(reader);
+            _repo.Update(reader);
+            return RedirectToAction("Index");
+        }
+
+        // Delete action to show confirmation for deleting a reader
+        public IActionResult Delete(int id)
+        {
+            var reader = _repo.GetById(id);
+            if (reader == null) return NotFound();
+            return View(reader);
+        }
+
+        // DeleteConfirmed action to delete the reader
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _repo.Delete(id);
+            return RedirectToAction("Index");
+        }
     }
 }

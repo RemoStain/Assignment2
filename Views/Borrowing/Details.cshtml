@@ -1,0 +1,11 @@
+﻿@model Assignment2.Models.Borrowing
+
+<h2>Borrowing Details</h2>
+
+<p><strong>Book ID:</strong> @Model.BookId</p>
+<p><strong>Reader ID:</strong> @Model.ReaderId</p>
+<p><strong>Borrow Date:</strong> @Model.BorrowDate.ToShortDateString()</p>
+<p><strong>Due Date:</strong> @Model.DueDate.ToShortDateString()</p>
+<p><strong>Return Date:</strong> @(Model.ReturnDate?.ToShortDateString() ?? "N/A")</p>
+
+<a asp-action="Index">Back to List</a>

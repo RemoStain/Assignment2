@@ -1,0 +1,34 @@
+﻿@model Assignment2.Models.Borrowing
+@{
+    var books = ViewBag.Books as List<Assignment2.Models.Book>;
+    var readers = ViewBag.Readers as List<Assignment2.Models.Reader>;
+}
+
+<h2>Edit Borrowing</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="BorrowingId" />
+
+    <div class="form-group">
+        <label for="BookId">Book</label>
+        <select asp-for="BookId" class="form-control" asp-items="new SelectList(books, " Id", "Title" )"></select>
+    </div>
+    <div class="form-group">
+        <label for="ReaderId">Reader</label>
+        <select asp-for="ReaderId" class="form-control" asp-items="new SelectList(readers, " Id", "FirstName" )"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="BorrowDate"></label>
+        <input asp-for="BorrowDate" type="date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DueDate"></label>
+        <input asp-for="DueDate" type="date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ReturnDate"></label>
+        <input asp-for="ReturnDate" type="date" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>

@@ -1,36 +1,77 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Assignment2.Models;
+using Assignment2.Repositories;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-[ApiController]
-[Route("api/[controller]")]
-public class BorrowingController : ControllerBase
+namespace Assignment2.Controllers
 {
-    [HttpGet]
-    public IActionResult GetAllBorrowings()
+    public class BorrowingController : Controller
     {
-        return Ok("List of all borrowings.");
-    }
+        private readonly BorrowingRepository _repo = new BorrowingRepository();
+        private readonly BookRepository _bookRepo = new BookRepository();
+        private readonly ReaderRepository _readerRepo = new ReaderRepository();
 
-    [HttpGet("{id}")]
-    public IActionResult GetBorrowingById(int id)
-    {
-        return Ok($"Details of borrowing with ID {id}.");
-    }
+        // Index action to show all borrowings
+        public IActionResult Index()
+        {
+            var borrowings = _repo.GetAll();
+            return View(borrowings);
+        }
 
-    [HttpPost]
-    public IActionResult AddBorrowing()
-    {
-        return Ok("Borrowing record added successfully.");
-    }
+        // Details action to show a specific borrowing
+        public IActionResult Details(int id)
+        {
+            var borrowing = _repo.GetById(id);
+            if (borrowing == null) return NotFound();
+            return View(borrowing);
+        }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateBorrowing(int id)
-    {
-        return Ok($"Borrowing record with ID {id} updated.");
-    }
+        // Create action for adding a new borrowing
+        public IActionResult Create()
+        {
+            // Use SelectList to bind BookId and ReaderId in the form
+            ViewBag.Books = new SelectList(_bookRepo.GetAll(), "BookId", "Title");
+            ViewBag.Readers = new SelectList(_readerRepo.GetAll(), "ReaderId", "FirstName");
+            return View();
+        }
 
-    [HttpDelete("{id}")]
-    public IActionResult DeleteBorrowing(int id)
-    {
-        return Ok($"Borrowing record with ID {id} deleted.");
+        [HttpPost]
+        public IActionResult Create(Borrowing borrowing)
+        {
+            if (!ModelState.IsValid) return View(borrowing);
+            _repo.Add(borrowing);
+            return RedirectToAction("Index");
+        }
+
+        // Edit action to update borrowing details
+        public IActionResult Edit(int id)
+        {
+            var borrowing = _repo.GetById(id);
+            if (borrowing == null) return NotFound();
+            return View(borrowing);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Borrowing borrowing)
+        {
+            if (!ModelState.IsValid) return View(borrowing);
+            _repo.Update(borrowing);
+            return RedirectToAction("Index");
+        }
+
+        // Delete action for deleting a borrowing
+        public IActionResult Delete(int id)
+        {
+            var borrowing = _repo.GetById(id);
+            if (borrowing == null) return NotFound();
+            return View(borrowing);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _repo.Delete(id);
+            return RedirectToAction("Index");
+        }
     }
 }

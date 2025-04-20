@@ -1,23 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class Reader
+namespace Assignment2.Models
 {
-    [Key]
-    public int ReaderId { get; set; }
+    public class Reader
+    {
+        [Key]
+        public int ReaderId { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    public string FirstName { get; set; }
+        [Required, StringLength(50)]
+        public string FirstName { get; set; } = null!;
 
-    [Required]
-    [StringLength(50)]
-    public string LastName { get; set; }
+        [Required, StringLength(50)]
+        public string LastName { get; set; } = null!;
 
-    [EmailAddress]
-    public string Email { get; set; }
+        [Required, EmailAddress]
+        public string Email { get; set; } = null!;
 
-    [Phone]
-    public string PhoneNumber { get; set; }
+        [Required, Phone]
+        public string PhoneNumber { get; set; } = null!;
 
-    public string Address { get; set; }
+        [Required]
+        public string Address { get; set; } = null!;
+    }
 }

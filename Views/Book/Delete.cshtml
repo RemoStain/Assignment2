@@ -1,0 +1,15 @@
+﻿@model Assignment2.Models.Book
+
+<h2>Delete Book</h2>
+
+<h3>Are you sure you want to delete this book?</h3>
+<div>
+    <strong>Title:</strong> @Model.Title <br />
+    <strong>Author:</strong> @Model.Author
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="BookId" />
+    <button type="submit">Yes, Delete</button>
+    <a asp-action="Index">Cancel</a>
+</form>

@@ -1,3 +1,4 @@
+using Assignment2.Repositories;
 
 namespace Assignment2
 {
@@ -7,26 +8,27 @@ namespace Assignment2
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add services for MVC
+            builder.Services.AddControllersWithViews();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            // Register repositories for dependency injection
+            builder.Services.AddScoped<BookRepository>();
+            builder.Services.AddScoped<ReaderRepository>();
+            builder.Services.AddScoped<BorrowingRepository>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
+            app.UseRouting();
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.MapDefaultControllerRoute();
 
             app.Run();
         }
