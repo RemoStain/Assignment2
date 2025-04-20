@@ -1,0 +1,10 @@
+﻿@model Assignment2.Models.Reader
+
+<h2>Delete Reader</h2>
+
+<p>Are you sure you want to delete the reader <strong>@Model.FirstName @Model.LastName</strong>?</p>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

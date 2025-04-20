@@ -1,0 +1,30 @@
+﻿@model List<Assignment2.Models.Borrowing>
+
+<h2>Borrowings</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Reader</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var borrowing in Model)
+        {
+            <tr>
+                <td>@borrowing.BookId</td>
+                <td>@borrowing.ReaderId</td>
+                <td>@borrowing.BorrowDate</td>
+                <td>@borrowing.DueDate</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@borrowing.BorrowingId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@borrowing.BorrowingId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
