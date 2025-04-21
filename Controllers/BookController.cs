@@ -1,30 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Assignment2.Models;
-using Assignment2.Repositories;
+using Assignment2.Data;
+using System.Linq;
 
 namespace Assignment2.Controllers
 {
     public class BookController : Controller
     {
-        private readonly BookRepository _repo;
+        private readonly LmsDbContext _context;
 
-        // Constructor
-        public BookController(BookRepository repo)
+        public BookController(LmsDbContext context)
         {
-            _repo = repo;
+            _context = context;
         }
 
         // GET: /Book/
-        public IActionResult Index()
+        public IActionResult Index(string searchString)
         {
-            var books = _repo.GetAll();
-            return View(books);
+            var book = from r in _context.Books
+                          select r;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                book = book.Where(r => r.Title.Contains(searchString) || r.Author.Contains(searchString));
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            return View(book.ToList());
         }
+
 
         // GET: /Book/Details/5
         public IActionResult Details(int id)
         {
-            var book = _repo.GetById(id);
+            var book = _context.Books.Find(id);
             if (book == null)
             {
                 return NotFound();
@@ -32,29 +42,31 @@ namespace Assignment2.Controllers
             return View(book);
         }
 
-        // GET: /Book/Create
+        // GET: Book/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Book/Create
+        // POST: Book/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Book book)
         {
             if (ModelState.IsValid)
             {
-                _repo.Add(book);
+                _context.Books.Add(book);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
         }
 
+
         // GET: /Book/Edit/5
         public IActionResult Edit(int id)
         {
-            var book = _repo.GetById(id);
+            var book = _context.Books.Find(id);
             if (book == null)
             {
                 return NotFound();
@@ -62,14 +74,15 @@ namespace Assignment2.Controllers
             return View(book);
         }
 
-        // POST: /Book/Edit
+        // POST: /Book/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Book book)
         {
             if (ModelState.IsValid)
             {
-                _repo.Update(book);
+                _context.Books.Update(book);
+                _context.SaveChanges(); // Save updates
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
@@ -78,7 +91,7 @@ namespace Assignment2.Controllers
         // GET: /Book/Delete/5
         public IActionResult Delete(int id)
         {
-            var book = _repo.GetById(id);
+            var book = _context.Books.Find(id);
             if (book == null)
             {
                 return NotFound();
@@ -91,7 +104,12 @@ namespace Assignment2.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            _repo.Delete(id);
+            var book = _context.Books.Find(id);
+            if (book != null)
+            {
+                _context.Books.Remove(book);
+                _context.SaveChanges(); // Save deletion
+            }
             return RedirectToAction(nameof(Index));
         }
     }
