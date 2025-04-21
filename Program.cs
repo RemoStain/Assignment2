@@ -1,4 +1,6 @@
+using Assignment2.Data;
 using Assignment2.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Assignment2
 {
@@ -10,6 +12,10 @@ namespace Assignment2
 
             // Add services for MVC
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<LmsDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             // Register repositories for dependency injection
             builder.Services.AddScoped<BookRepository>();

@@ -1,15 +1,23 @@
-﻿@model List<Assignment2.Models.Reader>
+﻿@model IEnumerable<Assignment2.Models.Reader>
 
-<h2>Readers</h2>
-<a asp-action="Create">Add New Reader</a>
+@{
+    ViewData["Title"] = "Readers";
+}
 
-<table class="table">
+<h1>Readers</h1>
+
+<form asp-action="Index" method="get">
+    <p>
+        Search: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" style="width: 300px; display: inline-block;" />
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </p>
+</form>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,14 +27,14 @@
             <tr>
                 <td>@reader.FirstName</td>
                 <td>@reader.LastName</td>
-                <td>@reader.Email</td>
-                <td>@reader.PhoneNumber</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@reader.ReaderId">Details</a> |
                     <a asp-action="Edit" asp-route-id="@reader.ReaderId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@reader.ReaderId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@reader.ReaderId">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<a asp-action="Create" class="btn btn-success">Add New Reader</a>
